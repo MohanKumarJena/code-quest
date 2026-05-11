@@ -1,7 +1,7 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuthStore } from "@/lib/store";
-import { QUESTIONS, Question, xpForNextLevel, CLASS_TOPICS } from "@/lib/data";
+import { Question, xpForNextLevel, CLASS_TOPICS } from "@/lib/data";
 import Navbar from "./Navbar";
 import QuestionModal from "./QuestionModal";
 
@@ -12,19 +12,13 @@ type FilterDiff = "all" | "easy" | "medium" | "hard";
 const diffColors = { easy: "#00ff88", medium: "#ffd700", hard: "#ff6b6b" };
 
 export default function UserDashboard() {
-  const { currentUser, getLeaderboard } = useAuthStore();
+  const { currentUser, questions, getLeaderboard } = useAuthStore();
   const [tab, setTab] = useState<Tab>("quests");
   const [activeQ, setActiveQ] = useState<Question | null>(null);
   const [filterType, setFilterType] = useState<FilterType>("all");
   const [filterDiff, setFilterDiff] = useState<FilterDiff>("all");
   const [filterTopic, setFilterTopic] = useState("all");
   const [search, setSearch] = useState("");
-  const [questions, setQuestions] = useState<Question[]>(QUESTIONS);
-
-  useEffect(() => {
-    const saved = localStorage.getItem("cq_questions");
-    setQuestions(saved ? JSON.parse(saved) : QUESTIONS);
-  }, [tab, activeQ]);
 
   if (!currentUser) return null;
 
