@@ -19,21 +19,21 @@ export default function AuthPage() {
     setEmail(""); setPassword(""); setUsername(""); setError("");
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setError("");
     if (mainMode === "admin") {
-      const r = login(email, password);
+      const r = await login(email, password);
       if (!r.success) { setError(r.error || "Login failed"); return; }
       if (r.role !== "admin") { setError("Access denied. Admin accounts only."); return; }
       return;
     }
     if (mode === "login") {
-      const r = login(email, password);
+      const r = await login(email, password);
       if (!r.success) { setError(r.error || "Login failed"); return; }
       if (r.role === "admin") { setError("Use the Admin panel to log in as admin."); return; }
     } else {
       if (!username.trim()) { setError("Username is required"); return; }
-      const r = register(username, email, password, avatar);
+      const r = await register(username, email, password, avatar);
       if (!r.success) setError(r.error || "Registration failed");
     }
   };
@@ -77,7 +77,16 @@ export default function AuthPage() {
         {/* Card */}
         <div style={{ background: "rgba(13,21,37,0.85)", border: `1px solid ${mainMode === "admin" ? "rgba(255,107,107,0.35)" : "rgba(108,99,255,0.3)"}`, borderRadius: "20px", padding: "2rem", backdropFilter: "blur(20px)", boxShadow: "0 20px 60px rgba(0,0,0,0.5)", transition: "border-color 0.3s" }}>
 
-
+          {/* Admin badge */}
+          {mainMode === "admin" && (
+            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.85rem 1rem", background: "rgba(255,107,107,0.08)", border: "1px solid rgba(255,107,107,0.2)", borderRadius: "10px", marginBottom: "1.5rem" }}>
+              <span style={{ fontSize: "1.4rem" }}>🔐</span>
+              <div>
+                <div style={{ fontWeight: "700", fontSize: "0.9rem", color: "var(--accent3)" }}>Admin Access Only</div>
+                <div style={{ fontSize: "0.76rem", color: "var(--text-muted)" }}>Enter your admin credentials to continue</div>
+              </div>
+            </div>
+          )}
 
           {/* User tabs */}
           {mainMode === "user" && (
